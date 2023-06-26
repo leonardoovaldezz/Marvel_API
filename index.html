@@ -9,23 +9,10 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-mqFF7esZJuoWUbIuPs79rGFQ7fR3hTGq2/Z0yZpN3+eqtDIrLe53PdyqiwECacL/QQlw8ThDLzLPL+o0bYtiQQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Marvel APP</title>
-    <style>
-        #map-container {
-            height: 400px;
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-    </style>
 </head>
 
 <body>
@@ -38,8 +25,9 @@
         </div>
     </div>
     <br><br>
-    <div id="map-container">
+    <div id="map-container" style="position: relative;">
         <div id="map"></div>
+        <button id="return-button" style="position: absolute; top: 10px; left: 10px;">Regresar a mi ubicación</button>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

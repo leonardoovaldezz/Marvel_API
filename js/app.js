@@ -23,12 +23,12 @@ const marvel = {
     for (const { urls, name, thumbnail } of data.results) {
       const urlHero = urls[0].url;
       contentHTML += `
-              <div class="col-md-4">
-                  <a href="${urlHero}" target="_blank">
-                      <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail">
-                  </a>
-                  <h3 class="title">${name}</h3>
-              </div>`;
+        <div class="col-md-4">
+            <a href="${urlHero}" target="_blank">
+                <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail">
+            </a>
+            <h3 class="title">${name}</h3>
+        </div>`;
     }
 
     container.innerHTML = contentHTML;
@@ -37,7 +37,7 @@ const marvel = {
 
 marvel.render();
 
-const geocodeApiKey = "e795af272354441ca0c66afc46eff58f"; // Reemplaza con tu propia API Key de OpenCage Geocoding
+const geocodeApiKey = "e795af272354441ca0c66afc46eff58f";
 
 if ("geolocation" in navigator) {
   navigator.geolocation.getCurrentPosition(
@@ -54,10 +54,8 @@ if ("geolocation" in navigator) {
         const { formatted } = data.results[0];
         console.log("Dirección:", formatted);
 
-        // Mostrar la ubicación en un mapa utilizando Leaflet.js
         const mapElement = document.getElementById("map");
 
-        // Crear objeto de mapa
         const map = L.map(mapElement).setView([latitude, longitude], 15);
 
         // Agregar capa de mapa base de OpenStreetMap
@@ -66,10 +64,23 @@ if ("geolocation" in navigator) {
         }).addTo(map);
 
         // Agregar un marcador en la ubicación con la dirección como etiqueta
-        L.marker([latitude, longitude])
+        const userLocationMarker = L.marker([latitude, longitude])
           .addTo(map)
           .bindPopup(formatted)
           .openPopup();
+
+        const returnToUserLocation = () => {
+          console.log("Haciendo clic en el botón de regresar");
+          map.setView([latitude, longitude], 15);
+          userLocationMarker.openPopup();
+        };
+
+        const returnButton = document.getElementById("return-button");
+        returnButton.addEventListener("click", returnToUserLocation);
+
+
+        mapElement.appendChild(returnButton);
+
       } else {
         console.log(
           "No se encontró ninguna dirección para las coordenadas proporcionadas."

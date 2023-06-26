@@ -31,3 +31,26 @@ const marvel = {
 };
 
 marvel.render();
+
+let objetoGeolocalizador = null;
+
+if ('geolocation' in navigator) {
+  objetoGeolocalizador = navigator.geolocation;
+
+  objetoGeolocalizador.getCurrentPosition(
+    position => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      console.log('Latitud:', latitude);
+      console.log('Longitud:', longitude);
+
+      // Aquí puedes utilizar la latitud y longitud obtenidas para realizar acciones en tu aplicación de Marvel.
+    },
+    error => {
+      console.error('Error al obtener la geolocalización:', error);
+    }
+  );
+} else {
+  console.error('Geolocalización no compatible');
+}

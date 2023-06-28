@@ -17,6 +17,7 @@ const marvel = {
     const container = document.querySelector("#marvel-row");
     const searchInput = document.querySelector("#search-input");
     const searchButton = document.querySelector("#search-button");
+    let allCharacters = []; // Variable para almacenar todos los personajes cargados
 
     const fetchCharacters = async () => {
       const response = await fetch(`${URL_API_MARVEL}${createParams()}`);
@@ -29,10 +30,10 @@ const marvel = {
       for (const { urls, name, thumbnail } of characters) {
         const urlHero = urls[0].url;
         contentHTML += `
-    <div class="col-md-4">
-        <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail" id="${name}">
-        <h3 class="title">${name}</h3>
-    </div>`;
+        <div class="col-md-4">
+          <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail" id="${name}">
+          <h3 class="title">${name}</h3>
+        </div>`;
       }
       container.innerHTML = contentHTML;
     };
@@ -84,14 +85,13 @@ const marvel = {
     };
 
     const searchCharacters = async () => {
-      const characters = await fetchCharacters();
+      const characters = allCharacters; // Filtrar en la lista completa de personajes cargados
       const searchTerm = searchInput.value.toLowerCase();
       const filteredCharacters = characters.filter((character) =>
         character.name.toLowerCase().includes(searchTerm)
       );
       if (filteredCharacters.length === 0) {
         alert("No se encontraron coincidencias.");
-        location.reload(); // Recargar la página
       }
       renderCharacters(filteredCharacters);
     };
@@ -99,7 +99,23 @@ const marvel = {
     searchButton.addEventListener("click", searchCharacters);
 
     const characters = await fetchCharacters();
+    allCharacters = characters;
     renderCharacters(characters);
+
+    const loadMoreCharacters = async () => {
+      offset += 20;
+      const newCharacters = await fetchCharacters();
+      allCharacters = allCharacters.concat(newCharacters);
+      renderCharacters(allCharacters);
+      window.scrollTo({ top: 1, left: 1, behavior: "smooth" });
+    };
+
+    const loadMoreButton = document.querySelector("#load-more-button");
+    loadMoreButton.addEventListener("click", loadMoreCharacters);
+
+    const initialCharacters = await fetchCharacters();
+    allCharacters = initialCharacters;
+    renderCharacters(allCharacters);
 
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -142,6 +158,7 @@ const marvel = {
 };
 
 marvel.render();
+
 
 const superheroes = {
   "3DMan": {

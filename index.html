@@ -21,16 +21,27 @@
         <a href="/" class="navbar-brand">Marvel APP</a>
     </nav>
     <center>
-        <input type="text" id="search-input" placeholder="Buscar personaje">
-        <button id="search-button">Buscar</button>
-    </center>
-
-    <br>
-    <div class="container">
-        <div class="row" id="marvel-row">
-            <!-- Contenido de las columnas -->
+        <br>
+        <div class="container">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="text" id="search-input" class="form-control" placeholder="Buscar...">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="search-button" class="btn btn-dark">Buscar</button>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="container">
+            <div id="marvel-row" class="row"></div>
+        </div>
+        <br>
+        <button id="load-more-button" class="btn btn-dark">Cargar más</button>
+    </center>
     <br><br>
     <div id="map-container" style="position: relative;">
         <div id="map"></div>

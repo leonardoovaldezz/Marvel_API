@@ -29,40 +29,12 @@ const marvel = {
       for (const { urls, name, thumbnail } of characters) {
         const urlHero = urls[0].url;
         contentHTML += `
-<div class="col-md-4">
-    <a href="${urlHero}" target="_blank">
-        <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail">
-    </a>
-    <h3 class="title">${name}</h3>
-</div>`;
+    <div class="col-md-4">
+        <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail" id="${name}">
+        <h3 class="title">${name}</h3>
+    </div>`;
       }
       container.innerHTML = contentHTML;
-    };
-
-    const superheroes = {
-      "3DMan": {
-        name: "3-D Man",
-        location: {
-          latitude: 19.2970,
-          longitude: -99.6352
-
-        }
-      },
-      aBomb: {
-        name: "A-Bomb (HAS)",
-        location: {
-          latitude: 19.4326,
-          longitude: -99.1332
-        }
-      },
-      aim: {
-        name: "A.I.M.",
-        location: {
-          latitude: 19.4326,
-          longitude: -99.1332
-        }
-      },
-      // Agrega más superhéroes y sus ubicaciones aquí...
     };
 
     const findClosestSuperhero = (userLatitude, userLongitude) => {
@@ -141,12 +113,20 @@ const marvel = {
           );
 
           if (closestSuperhero) {
-            console.log(
-              "El superhéroe más cercano es:",
-              closestSuperhero.name
-            );
-            // Aquí puedes utilizar la API de Marvel para obtener más información sobre el superhéroe más cercano
-            // y mostrarla en tu aplicación
+            Swal.fire({
+              title: "Superhéroe más cercano",
+              html: `El superhéroe más cercano a tu ubicación es: <b>${closestSuperhero.name}</b>`,
+              icon: "info",
+              confirmButtonText: "Ver más",
+              showCancelButton: true,
+              cancelButtonText: "Cancelar",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Aquí puedes realizar acciones adicionales si el usuario confirma
+                // Por ejemplo, redirigir a una página de detalles del superhéroe más cercano
+                location.href = `#${closestSuperhero.name}`;
+              }
+            });
           } else {
             console.log("No se encontró ningún superhéroe cercano.");
           }
@@ -365,12 +345,34 @@ const renderMap = async () => {
     const returnButton = document.getElementById("return-button");
     returnButton.addEventListener("click", returnToUserLocation);
 
+    const redirectToSuperhero = (superheroName) => {
+      const confirmed = confirm(`¿Deseas ver a ${superheroName}?`);
+
+      if (confirmed) {
+        location.href = `#${superheroName}`;
+      }
+    };
+
     // Iterar sobre los superhéroes y crear marcadores en el mapa para cada ubicación
     for (const superheroKey in superheroes) {
       const superhero = superheroes[superheroKey];
       const { latitude, longitude } = superhero.location;
+
       const superheroMarker = createMarker(latitude, longitude, superhero.name).addTo(map);
+      superheroMarker.superheroName = superhero.name;
+
+      let clickCount = 0;
+
+      superheroMarker.on("click", () => {
+        clickCount++;
+
+        if (clickCount === 2) {
+          const clickedSuperheroName = superheroMarker.superheroName;
+          redirectToSuperhero(clickedSuperheroName);
+        }
+      });
     }
+
   } catch (error) {
     console.error("Error al obtener la geolocalización:", error);
   }

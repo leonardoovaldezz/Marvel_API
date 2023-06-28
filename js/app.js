@@ -85,18 +85,40 @@ const marvel = {
     };
 
     const searchCharacters = async () => {
-      const characters = allCharacters; // Filtrar en la lista completa de personajes cargados
-      const searchTerm = searchInput.value.toLowerCase();
-      const filteredCharacters = characters.filter((character) =>
-        character.name.toLowerCase().includes(searchTerm)
-      );
-      if (filteredCharacters.length === 0) {
-        alert("No se encontraron coincidencias.");
+      const searchTerm = searchInput.value.toLowerCase().trim();
+
+      if (searchTerm === "") {
+        Swal.fire({
+          title: "Campo de búsqueda vacío",
+          text: "Por favor, ingresa un término de búsqueda.",
+          icon: "warning",
+        });
+        return;
       }
+
+      const timestamp = getTimestamp();
+      const hash = createHash(timestamp);
+      const params = `characters?nameStartsWith=${searchTerm}&limit=20&offset=${offset}&ts=${timestamp}&apikey=${publicKey}&hash=${hash}`;
+
+      const response = await fetch(`${URL_API_MARVEL}${params}`);
+      const { data } = await response.json();
+      const filteredCharacters = data.results;
+
+      if (filteredCharacters.length === 0) {
+        Swal.fire({
+          title: "Personaje no encontrado",
+          text:
+            "Por favor, ingresa correctamente el nombre del personaje y vuelve a intentarlo.",
+          icon: "error",
+        });
+        return;
+      }
+
       renderCharacters(filteredCharacters);
     };
 
     searchButton.addEventListener("click", searchCharacters);
+
 
     const characters = await fetchCharacters();
     allCharacters = characters;

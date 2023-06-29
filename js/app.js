@@ -9,10 +9,10 @@ const marvel = {
     let offset = 0;
 
     const getTimestamp = () => new Date().getTime();
-    const createHash = () =>
-      MD5(`${getTimestamp()}${privateKey}${publicKey}`).toString();
+    const createHash = (timestamp) =>
+      MD5(`${timestamp}${privateKey}${publicKey}`).toString();
     const createParams = () =>
-      `characters?limit=20&offset=${offset}&ts=${getTimestamp()}&apikey=${publicKey}&hash=${createHash()}`;
+      `characters?limit=20&offset=${offset}&ts=${getTimestamp()}&apikey=${publicKey}&hash=${createHash(getTimestamp())}`;
 
     const container = document.querySelector("#marvel-row");
     const searchInput = document.querySelector("#search-input");
@@ -138,16 +138,23 @@ const marvel = {
 
     searchButton.addEventListener("click", searchCharacters);
 
-    const characters = await fetchCharacters();
-    allCharacters = characters;
-    renderCharacters(characters);
-
     const loadMoreCharacters = async () => {
       offset += 20;
+      const previousScrollPosition = window.pageYOffset; // Obtener la posición actual de desplazamiento
+
       const newCharacters = await fetchCharacters();
       allCharacters = allCharacters.concat(newCharacters);
       renderCharacters(allCharacters);
-      window.scrollTo({ top: 1, left: 1, behavior: "smooth" });
+
+      // Obtener el primer elemento agregado después de cargar los nuevos personajes
+      const firstNewCharacterElement = container.children[allCharacters.length - newCharacters.length];
+
+      // Desplazarse hacia el primer elemento agregado
+      firstNewCharacterElement.scrollIntoView({ behavior: "auto" });
+
+      // Actualizar la posición de desplazamiento anterior con respecto al primer elemento agregado
+      const newScrollPosition = window.pageYOffset + firstNewCharacterElement.getBoundingClientRect().top;
+      window.scrollTo({ top: newScrollPosition, left: 0 });
     };
 
     const loadMoreButton = document.querySelector("#load-more-button");
@@ -180,7 +187,8 @@ const marvel = {
               if (result.isConfirmed) {
                 // Aquí puedes realizar acciones adicionales si el usuario confirma
                 // Por ejemplo, redirigir a una página de detalles del superhéroe más cercano
-                location.href = `#${closestSuperhero.name}`;
+                const closestSuperheroElement = document.getElementById(closestSuperhero.name);
+                closestSuperheroElement.scrollIntoView({ behavior: "smooth" });
               }
             });
           } else {
@@ -199,7 +207,6 @@ const marvel = {
 
 marvel.render();
 
-
 const superheroes = {
   "3DMan": {
     name: "3-D Man",
@@ -211,8 +218,8 @@ const superheroes = {
   aBomb: {
     name: "A-Bomb (HAS)",
     location: {
-      latitude: 19.4144,
-      longitude: -99.0284
+      latitude: 19.4059,
+      longitude: -98.9925
     }
   },
   aim: {
@@ -281,8 +288,8 @@ const superheroes = {
   aegis: {
     name: "Aegis (Trey Rollins)",
     location: {
-      latitude: 19.4059,
-      longitude: -98.9925
+      latitude: 19.4144,
+      longitude: -99.0284
     }
   },
   aero: {
@@ -436,3 +443,18 @@ const renderMap = async () => {
 };
 
 renderMap();
+
+//Scroll para subir
+const scrollToTopButton = document.querySelector("#scroll-to-top");
+
+scrollToTopButton.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+window.addEventListener("scroll", () => {
+  if (window.pageYOffset > 500) {
+    scrollToTopButton.style.display = "block";
+  } else {
+    scrollToTopButton.style.display = "none";
+  }
+});

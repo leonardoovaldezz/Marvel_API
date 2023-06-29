@@ -5,22 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-        integrity="sha512-mqFF7esZJuoWUbIuPs79rGFQ7fR3hTGq2/Z0yZpN3+eqtDIrLe53PdyqiwECacL/QQlw8ThDLzLPL+o0bYtiQQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.1.0/dist/slate/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Marvel APP</title>
+    <link href="https://p4.wallpaperbetter.com/wallpaper/663/176/849/red-logo-background-marvel-wallpaper-preview.jpg"
+        rel="shortcut icon" type="image/x-icon">
+    <title>Marvel</title>
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <a href="/" class="navbar-brand">Marvel APP</a>
-    </nav>
     <center>
+        <br>
+        <div class="container">
+            <h1 style="color: rgb(210, 30, 30); font-weight: bold;">MARVEL</h1>
+        </div>
+
         <br>
         <div class="container">
             <div class="col-md-12">
@@ -32,22 +35,25 @@
                             </div>
                         </div>
                     </div>
-                    <button id="search-button" class="btn btn-dark">Buscar</button>
+                    <button id="search-button" class="btn btn-outline-warning">Buscar</button>
                 </div>
             </div>
         </div>
+        <br>
         <div class="container">
             <div id="marvel-row" class="row"></div>
         </div>
 
         <br>
-        <button id="load-more-button" class="btn btn-dark">Cargar más</button>
+        <button id="load-more-button" class="btn btn-outline-warning">Cargar más</button>
     </center>
     <br><br>
     <div id="map-container" style="position: relative;">
         <div id="map"></div>
         <button id="return-button" style="position: absolute; top: 10px; left: 10px;">Regresar a mi ubicación</button>
     </div>
+    <button id="scroll-to-top" title="Ir arriba"><img src="https://svgsilh.com/svg/2304008.svg"
+            alt="Botón Ir arriba"></button>
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

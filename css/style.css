@@ -1,3 +1,7 @@
+body {
+  background-color: grey;
+}
+
 img.img-thumbnail {
   width: 80%;
   height: 80%;
@@ -36,8 +40,14 @@ img.img-thumbnail {
 }
 
 #search-input {
+  color: #2a0979;
+  background-color: grey;
+  border-color: rgb(2, 2, 2);
+  border-width: 3px;
+}
+
+#search-input::placeholder {
   color: #ffffff;
-  background-color: #2b2a35;
 }
 
 .custom-img {
@@ -52,6 +62,8 @@ img.img-thumbnail {
 
 .card {
   width: 1000px;
+  border-color: rgb(2, 2, 2);
+  border-width: 3px;
 }
 
 .img-fluid {

@@ -27,16 +27,36 @@ const marvel = {
 
     const renderCharacters = (characters) => {
       let contentHTML = "";
-      for (const { urls, name, thumbnail } of characters) {
+      for (const { urls, name, thumbnail, description, comics, series, stories, events } of characters) {
         const urlHero = urls[0].url;
         contentHTML += `
-        <div class="col-md-4">
-          <img src="${thumbnail.path}.${thumbnail.extension}" alt="${name}" class="img-thumbnail" id="${name}">
-          <h3 class="title">${name}</h3>
-        </div>`;
+                  <tr class="trDatos">
+                      <td>
+                          <div class="card mb-3">
+                              <div class="row g-0">
+                                  <div class="col-md-4">
+                                      <img src="${thumbnail.path.replace("http", "https")}.${thumbnail.extension}" class="img-fluid rounded-start" alt="${name}" id="${name}">
+                                  </div>
+                                  <div class="col-md-8">
+                                      <div class="card-body">
+                                          <h5 id="h5_${name}" class="card-title display-4 text-center">${name}</h5>
+                                          <p class="card-text">${description ? description : 'No hay descripción'}</p>
+                                          <p class="card-text"><small class="text-muted">
+                                              ${comics.available} Comic(s) disponible(s).<br />
+                                              ${series.available} Serie(s) disponible(s).<br />
+                                              ${stories.available} Historia(s) disponible(s).<br />
+                                              ${events.available} Evento(s) disponible(s).<br />
+                                          </small></p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </td>
+                  </tr>`;
       }
       container.innerHTML = contentHTML;
     };
+
 
     const findClosestSuperhero = (userLatitude, userLongitude) => {
       let closestSuperhero = null;
@@ -118,7 +138,6 @@ const marvel = {
     };
 
     searchButton.addEventListener("click", searchCharacters);
-
 
     const characters = await fetchCharacters();
     allCharacters = characters;

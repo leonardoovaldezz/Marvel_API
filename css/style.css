@@ -34,3 +34,27 @@ img.img-thumbnail {
 #return-button:hover {
   background-color: #45a049;
 }
+
+#search-input {
+  color: #ffffff;
+  background-color: #2b2a35;
+}
+
+.custom-img {
+  width: 200px;
+  height: auto;
+  object-fit: cover;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.card {
+  width: 1000px;
+}
+
+.img-fluid {
+  width: 400px;
+  height: 300px;
+}

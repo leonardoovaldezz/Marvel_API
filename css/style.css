@@ -50,6 +50,9 @@
   padding: 0;
   display: none;
   cursor: pointer;
+  top: auto !important;
+  left: auto;
+  z-index: 1000;
 }
 
 #scroll-to-top img {

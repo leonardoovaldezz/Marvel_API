@@ -24,60 +24,126 @@ const marvel = {
       const { data } = await response.json();
       return data.results;
     };
-
     const renderCharacters = (characters) => {
       let contentHTML = "";
       for (const { urls, name, thumbnail, description, comics, series, stories, events } of characters) {
         const urlHero = urls[0].url;
-        const modalId = `modal_${name.replace(/[\s()]/g, "_")}`; // Modificado: generar el ID del modal sin caracteres especiales
+        const comicModalId = `comic_modal_${name.replace(/[\s()]/g, "_")}`;
+        const seriesModalId = `series_modal_${name.replace(/[\s()]/g, "_")}`;
+        const storiesModalId = `stories_modal_${name.replace(/[\s()]/g, "_")}`;
+        const eventsModalId = `events_modal_${name.replace(/[\s()]/g, "_")}`;
         contentHTML += `
-              <tr class="trDatos">
-                  <td>
-                      <div class="card mb-3 mx-auto">
-                          <div class="row g-0">
-                              <div class="col-md-4">
-                                  <img src="${thumbnail.path.replace("http", "https")}.${thumbnail.extension}" class="img-fluid rounded-start" alt="${name}" id="${name}">
-                              </div>
-                              <div class="col-md-8">
-                                  <div class="card-body">
-                                      <h5 id="h5_${name}" class="card-title display-4 text-center">${name}</h5>
-                                      <p class="card-text">${description ? description : 'No hay descripción'}</p>
-                                      <p class="card-text"><small class="text-muted">
-                                          ${comics.available} Comic(s) disponible(s).<br />
-                                          ${series.available} Serie(s) disponible(s).<br />
-                                          ${stories.available} Historia(s) disponible(s).<br />
-                                          ${events.available} Evento(s) disponible(s).<br />
-                                      </small></p>
-                                      <button class="btn btn-primary view-details-button" data-toggle="modal" data-target="#${modalId}">Ver Comics</button>
+                  <tr class="trDatos">
+                      <td>
+                          <div class="card mb-3 mx-auto">
+                              <div class="row g-0">
+                                  <div class="col-md-4">
+                                      <img src="${thumbnail.path.replace("http", "https")}.${thumbnail.extension}" class="img-fluid rounded-start" alt="${name}" id="${name}">
+                                  </div>
+                                  <div class="col-md-8">
+                                      <div class="card-body">
+                                          <h5 id="h5_${name}" class="card-title display-4 text-center">${name}</h5>
+                                          <p class="card-text">${description ? description : 'No hay descripción'}</p>
+                                          <p class="card-text"><small class="text-muted">
+                                              ${comics.available} Comic(s) disponible(s).<br />
+                                              ${series.available} Serie(s) disponible(s).<br />
+                                              ${stories.available} Historia(s) disponible(s).<br />
+                                              ${events.available} Evento(s) disponible(s).<br />
+                                          </small></p>
+                                          <button class="btn btn-primary view-details-button" data-toggle="modal" data-target="#${comicModalId}">Ver Comics</button>
+                                          <button class="btn btn-primary view-details-button" data-toggle="modal" data-target="#${seriesModalId}">Ver Series</button>
+                                          <button class="btn btn-primary view-details-button" data-toggle="modal" data-target="#${storiesModalId}">Ver Historias</button>
+                                          <button class="btn btn-primary view-details-button" data-toggle="modal" data-target="#${eventsModalId}">Ver Eventos</button>
+                                      </div>
                                   </div>
                               </div>
                           </div>
-                      </div>
-                  </td>
-              </tr>
-              <!-- Agrega el modal dentro de la cadena de texto -->
-              <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog" aria-labelledby="${modalId}_label" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="${modalId}_label">Comics de ${name}</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                              </button>
-                          </div>
-                          <div class="modal-body">
-                              <h6>Cómics:</h6>
-                              <ul>
-                                  ${comics.items.map((comic) => `<li>${comic.name}</li>`).join("")}
-                              </ul>
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                      </td>
+                  </tr>
+                  <div class="modal fade" id="${comicModalId}" tabindex="-1" role="dialog" aria-labelledby="${comicModalId}_label" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="${comicModalId}_label">Comics de ${name}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <h6>Cómics:</h6>
+                                  <ul>
+                                      ${comics.items.map((comic) => `<li>${comic.name}</li>`).join("")}
+                                  </ul>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                              </div>
                           </div>
                       </div>
                   </div>
-              </div>                
-              `;
+                  <div class="modal fade" id="${seriesModalId}" tabindex="-1" role="dialog" aria-labelledby="${seriesModalId}_label" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="${seriesModalId}_label">Series de ${name}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <h6>Series:</h6>
+                                  <ul>
+                                      ${series.items.map((serie) => `<li>${serie.name}</li>`).join("")}
+                                  </ul>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal fade" id="${storiesModalId}" tabindex="-1" role="dialog" aria-labelledby="${storiesModalId}_label" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="${storiesModalId}_label">Historias de ${name}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <h6>Historias:</h6>
+                                  <ul>
+                                      ${stories.items.map((story) => `<li>${story.name}</li>`).join("")}
+                                  </ul>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal fade" id="${eventsModalId}" tabindex="-1" role="dialog" aria-labelledby="${eventsModalId}_label" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="${eventsModalId}_label">Eventos de ${name}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <h6>Eventos:</h6>
+                                  <ul>
+                                      ${events.items.map((event) => `<li>${event.name}</li>`).join("")}
+                                  </ul>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>`;
       }
       container.innerHTML = contentHTML;
     };

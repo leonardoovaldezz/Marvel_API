@@ -9,22 +9,187 @@ const marvel = {
     let offset = 0;
 
     const getTimestamp = () => new Date().getTime();
+    const timestamp = getTimestamp(); // Generate timestamp once
     const createHash = (timestamp) =>
       MD5(`${timestamp}${privateKey}${publicKey}`).toString();
     const createParams = () =>
-      `characters?limit=20&offset=${offset}&ts=${getTimestamp()}&apikey=${publicKey}&hash=${createHash(getTimestamp())}`;
+      `characters?limit=20&offset=${offset}&ts=${timestamp}&apikey=${publicKey}&hash=${createHash(
+        timestamp
+      )}`;
 
     const container = document.querySelector("#marvel-row");
     const searchInput = document.querySelector("#search-input");
     const searchButton = document.querySelector("#search-button");
-    let allCharacters = []; // Variable para almacenar todos los personajes cargados
+    let allCharacters = [];
 
     const fetchCharacters = async () => {
-      const response = await fetch(`${URL_API_MARVEL}${createParams()}`);
-      const { data } = await response.json();
-      return data.results;
+      try {
+        const response = await fetch(`${URL_API_MARVEL}${createParams()}`);
+        const { data } = await response.json();
+        return data.results;
+      } catch (error) {
+        console.error("Error fetching characters:", error);
+        throw error;
+      }
     };
-    const renderCharacters = (characters) => {
+
+    const startButton = document.querySelector("#start-button");
+
+    startButton.addEventListener("click", () => {
+      startGame();
+    });
+
+
+    const selectRandomCharacter = (characters) => {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      return characters[randomIndex];
+    };
+
+    const getCharacterClues = (character) => {
+      const { name, description } = character;
+      const clues = [];
+      clues.push(`El nombre del personaje tiene ${name.length} letras.`);
+      clues.push(
+        `La descripción del personaje es: ${description ? description : "No hay descripción"
+        }`
+      );
+      // Add more clues here if desired
+      return clues;
+    };
+
+    const startGame = async () => {
+      try {
+        const characters = await fetchCharacters();
+        const character = selectRandomCharacter(characters);
+        const clues = getCharacterClues(character);
+        const characterName = character.name.toLowerCase();
+
+        let guess = "";
+        let attempts = 0;
+
+        const instructionMessage = "¡Adivina el personaje de Marvel!\n\nAquí tienes algunas pistas:\n";
+
+        const initialCluesMessage = clues.slice(0, 1).join("\n");
+
+        const showInstructions = () => {
+          Swal.fire({
+            title: "Instrucciones",
+            text: instructionMessage + initialCluesMessage,
+            icon: "info",
+            confirmButtonText: "Empezar",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              promptGuess(characterName);
+            }
+          });
+        };
+
+        showInstructions();
+
+        const promptGuess = (correctAnswer) => {
+          attempts++;
+
+          Swal.fire({
+            title: `Intento ${attempts}/5`,
+            input: "text",
+            inputValue: guess,
+            inputPlaceholder: "Introduce el nombre del personaje",
+            confirmButtonText: "Aceptar",
+            showCancelButton: attempts === 1,
+            cancelButtonText: "Cancelar",
+            allowOutsideClick: false,
+            inputValidator: (value) => {
+              if (!value) {
+                return "Debes ingresar un nombre";
+              }
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              guess = result.value.toLowerCase();
+
+              if (guess === correctAnswer) {
+                Swal.fire({
+                  title: "¡Respuesta correcta!",
+                  text: "Has adivinado el personaje.",
+                  icon: "success",
+                  confirmButtonText: "OK",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    showCharacterInfo(character);
+                  }
+                });
+              } else if (attempts === 5) {
+                Swal.fire({
+                  title: "¡Perdiste!",
+                  html: `
+                                      <p>No has adivinado el personaje.</p>
+                                      <p>El personaje era: ${character.name}</p>
+                                  `,
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
+              } else {
+                let additionalClues = "";
+
+                if (attempts === 1) {
+                  additionalClues = `La primera letra del personaje es: ${characterName[0]}`;
+                } else if (attempts === 2) {
+                  additionalClues = `Las dos primeras letras del personaje son: ${characterName.substring(0, 2)}`;
+                } else if (attempts === 3) {
+                  additionalClues = `Las tres primeras letras del personaje son: ${characterName.substring(0, 3)}`;
+                } else if (attempts === 4) {
+                  additionalClues = `Las tres primeras letras del personaje son: ${characterName.substring(0, 3)} ................. La descripción del personaje es: ${character.description ? character.description : "No hay descripción"}`;
+                }
+
+                Swal.fire({
+                  title: "Respuesta incorrecta",
+                  text: "Sigue intentándolo.",
+                  icon: "error",
+                  confirmButtonText: "Continuar",
+                  html: additionalClues,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    promptGuess(correctAnswer);
+                  } else {
+                    showCharacterInfo(character);
+                  }
+                });
+              }
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              Swal.fire({
+                title: "Juego cancelado",
+                text: "Has cancelado el juego.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+            }
+          });
+        };
+
+        const showCharacterInfo = (character) => {
+          Swal.fire({
+            title: "Personaje generado",
+            html: `
+                          <p>Nombre: ${character.name}</p>
+                          <p>Descripción: ${character.description ? character.description : "No hay descripción"}</p>                           
+                      `,
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+        };
+      } catch (error) {
+        console.error("Error starting game:", error);
+        Swal.fire({
+          title: "Error",
+          text: "Ha ocurrido un error al iniciar el juego.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    };
+
+
+    const renderCharacters = async (characters) => {
       let contentHTML = "";
       for (const { urls, name, thumbnail, description, comics, series, stories, events } of characters) {
         const urlHero = urls[0].url;
@@ -146,7 +311,9 @@ const marvel = {
                   </div>`;
       }
       container.innerHTML = contentHTML;
+      // Agrega el evento click al botón de inicio del juego          
     };
+
 
     const findClosestSuperhero = (userLatitude, userLongitude) => {
       let closestSuperhero = null;

@@ -16,6 +16,11 @@ const marvel = {
       `characters?limit=20&offset=${offset}&ts=${timestamp}&apikey=${publicKey}&hash=${createHash(
         timestamp
       )}`;
+    const createParams2 = () =>
+      `characters?limit=100&offset=${offset}&ts=${timestamp}&apikey=${publicKey}&hash=${createHash(
+        timestamp
+      )}`;
+
 
     const container = document.querySelector("#marvel-row");
     const searchInput = document.querySelector("#search-input");
@@ -32,6 +37,49 @@ const marvel = {
         throw error;
       }
     };
+
+    const fetchImg = async () => {
+      try {
+        const response = await fetch(`${URL_API_MARVEL}${createParams2()}`);
+        const { data } = await response.json();
+        return data.results;
+      } catch (error) {
+        console.error("Error fetching characters:", error);
+        throw error;
+      }
+    };
+
+    const marvelImagesContainer = document.querySelector("#marvel-images");
+
+    // Función para obtener todas las imágenes de la API
+    const fetchImages = async () => {
+      try {
+        const characters = await fetchImg();
+        const imageUrls = characters.map((character) => {
+          const { thumbnail } = character;
+          return `${thumbnail.path.replace("http", "https")}.${thumbnail.extension}`;
+        });
+        return imageUrls;
+      } catch (error) {
+        console.error("Error fetching images:", error);
+        throw error;
+      }
+    };
+
+    // Función para mostrar las imágenes en el contenedor
+    const showImages = (imageUrls) => {
+      const imagesHTML = imageUrls
+        .map((imageUrl) => {
+          return `<img src="${imageUrl}" class="vertical-image" />`;
+        })
+        .join("");
+      marvelImagesContainer.innerHTML = imagesHTML;
+    };
+
+    // Llama a la función para obtener las imágenes y mostrarlas
+    const imageUrls = await fetchImages();
+    showImages(imageUrls);
+
 
     const startButton = document.querySelector("#start-button");
 
